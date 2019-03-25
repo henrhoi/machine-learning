@@ -24,6 +24,9 @@ K.set_session(tf.Session(config=config))
 x_train, y_train, x_test, y_test, vocab_size, max_length = pickle.load(
     open("data/keras-data.pickle", "rb")).values()
 
+n=1000
+x_train = x_train[:n]
+y_train = y_train[:n]
 
 x_train = prep.sequence.pad_sequences(x_train, maxlen=max_length)
 x_test = prep.sequence.pad_sequences(x_test, maxlen=max_length)
@@ -40,7 +43,7 @@ def build_model():
     return model
 
 
-epochs = 10
+epochs = 2
 with tf.device('/GPU:0'):
     # Building model
     model = build_model()
