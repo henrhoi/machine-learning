@@ -24,9 +24,9 @@ K.set_session(tf.Session(config=config))
 x_train, y_train, x_test, y_test, vocab_size, max_length = pickle.load(
     open("data/keras-data.pickle", "rb")).values()
 
-n=1000
-x_train = x_train[:n]
-y_train = y_train[:n]
+#n=1000
+#x_train = x_train[:n]
+#y_train = y_train[:n]
 
 x_train = prep.sequence.pad_sequences(x_train, maxlen=max_length)
 x_test = prep.sequence.pad_sequences(x_test, maxlen=max_length)
@@ -43,7 +43,7 @@ def build_model():
     return model
 
 
-epochs = 2
+epochs = 15
 with tf.device('/GPU:0'):
     # Building model
     model = build_model()
@@ -51,9 +51,9 @@ with tf.device('/GPU:0'):
     # Fitting model
     y_binary = to_categorical(y_train, num_classes=2)
 
-    filepath = "Model-{epoch:02d}.h5"
-    ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
-    train_history = model.fit(x_train, y_binary, batch_size=128, epochs=epochs)
+    filepath = "epoch_models/model-{epoch:02d}.h5"
+    callbacks = [ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)]
+    train_history = model.fit(x_train, y_binary, batch_size=128, epochs=epochs, callbacks=callbacks)
     model.save(f"LSTM_ReviewClf_{datetime.datetime.now()}.h5")
 
     # Plotting training epochs
